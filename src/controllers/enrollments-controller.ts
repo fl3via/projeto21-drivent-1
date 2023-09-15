@@ -25,24 +25,23 @@ export async function getAddressFromCEP(req: AuthenticatedRequest, res: Response
   const { cep } = req.query;
 
   try {
-
+   
     if (!cep) {
-      return res.status(httpStatus.BAD_REQUEST).send('O parâmetro "cep" é obrigatório.');
+      return res.status(httpStatus.BAD_REQUEST).send();
     }
-
 
     const address = await enrollmentsService.getAddressFromCEP(String(cep));
 
-
-    res.status(httpStatus.OK).json(address);
-  } catch (error) {
-   
-    if (error.message === 'CEP inválido ou inexistente.') {
-      return res.status(httpStatus.BAD_REQUEST).send(error.message);
-    } else {
-     
-      console.error('Erro ao buscar o endereço pelo CEP:', error);
-      return res.status(httpStatus.INTERNAL_SERVER_ERROR).send('Erro interno ao buscar o endereço pelo CEP.');
+  
+    if (!address) {
+      return res.status(httpStatus.BAD_REQUEST).send();
     }
+
+    
+    res.status(httpStatus.OK).send(address);
+  } catch (error) {
+    
+    console.error();
+    return res.status(httpStatus.INTERNAL_SERVER_ERROR).send();
   }
 }
