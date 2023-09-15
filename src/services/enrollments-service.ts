@@ -10,12 +10,17 @@ async function getAddressFromCEP(cep: string) {
   const result = await request.get(`${process.env.VIA_CEP_API}/${cep}/json/`);
 
   // TODO: Tratar regras de  negócio e lanças eventuais erros
-  if (!result.data) {
+  if (!result.data || result.data.erro) {
     throw notFoundError()
   }
 
+  
+
   // FIXME: não estamos interessados em todos os campos
+  return result.data;
+
   const { logradouro, complemento, bairro, localidade: cidade, uf } = result.data;
+
   const formattedAddress = {
     logradouro,
     complemento,
@@ -24,9 +29,11 @@ async function getAddressFromCEP(cep: string) {
     uf,
   };
 
-  return formattedAddress;
+return formattedAddress
 
 }
+
+
 
 async function getOneWithAddressByUserId(userId: number): Promise<GetOneWithAddressByUserIdResult> {
   const enrollmentWithAddress = await enrollmentRepository.findWithAddressByUserId(userId);
