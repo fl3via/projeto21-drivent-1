@@ -26,18 +26,15 @@ export async function getAddressFromCEP(req: AuthenticatedRequest, res: Response
 
   try {
    
-    if (!cep) {
-      return res.status(httpStatus.BAD_REQUEST).send();
-    }
-
     const address = await enrollmentsService.getAddressFromCEP(String(cep));
-
-    // Se o serviço retornar um endereço válido, retorne-o como JSON
-    res.status(httpStatus.OK).json(address);
+   res.status(httpStatus.OK).send(address);
+   
   } catch (error) {
-    // Se ocorrer um erro, retorne um erro interno do servidor
     console.error('Erro ao buscar o endereço pelo CEP:', error);
-    return res.status(httpStatus.INTERNAL_SERVER_ERROR).send();
+    if (error.name === "NotFoundError") {
+      return res.status(httpStatus.NOT_FOUND).send();
+    }
+  
   }
 }
 
