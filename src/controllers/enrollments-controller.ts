@@ -22,13 +22,13 @@ export async function postCreateOrUpdateEnrollment(req: AuthenticatedRequest, re
 
 // TODO - Receber o CEP do usuário por query params.
 export async function getAddressFromCEP(req: AuthenticatedRequest, res: Response) {
-  const { cep } = req.query;
+  const { cep } = req.query as Record<string, string>
 
   try {
    
     const address = await enrollmentsService.getAddressFromCEP(String(cep));
    res.status(httpStatus.OK).send(address);
-   
+
   } catch (error) {
     console.error('Erro ao buscar o endereço pelo CEP:', error);
     if (error.name === "NotFoundError") {
