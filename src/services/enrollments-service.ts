@@ -19,17 +19,6 @@ async function getAddressFromCEP(cep: string) {
   // FIXME: não estamos interessados em todos os campos
   return result.data;
 
-  const { logradouro, complemento, bairro, localidade: cidade, uf } = result.data;
-
-  const formattedAddress = {
-    logradouro,
-    complemento,
-    bairro,
-    cidade,
-    uf,
-  };
-
-return formattedAddress
 
 }
 
@@ -65,6 +54,7 @@ async function createOrUpdateEnrollmentWithAddress(params: CreateOrUpdateEnrollm
   const address = getAddressForUpsert(params.address);
 
   // TODO - Verificar se o CEP é válido antes de associar ao enrollment.
+
 
   const newEnrollment = await enrollmentRepository.upsert(params.userId, enrollment, exclude(enrollment, 'userId'));
 

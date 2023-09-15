@@ -24,15 +24,20 @@ export async function postCreateOrUpdateEnrollment(req: AuthenticatedRequest, re
 export async function getAddressFromCEP(req: AuthenticatedRequest, res: Response) {
   const { cep } = req.query;
 
-  if (!cep) {
-    return res.status(httpStatus.BAD_REQUEST).send();
+  try {
+   
+    if (!cep) {
+      return res.status(httpStatus.BAD_REQUEST).send();
+    }
+
+    const address = await enrollmentsService.getAddressFromCEP(String(cep));
+
+    // Se o serviço retornar um endereço válido, retorne-o como JSON
+    res.status(httpStatus.OK).json(address);
+  } catch (error) {
+    // Se ocorrer um erro, retorne um erro interno do servidor
+    console.error('Erro ao buscar o endereço pelo CEP:', error);
+    return res.status(httpStatus.INTERNAL_SERVER_ERROR).send();
   }
-
-  const address = await enrollmentsService.getAddressFromCEP(String(cep));
-
-  if (!address) {
-    return res.status(httpStatus.BAD_REQUEST).send();
-  }
-
-  res.status(httpStatus.OK).send(address);
 }
+
